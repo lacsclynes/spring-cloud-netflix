@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,13 +32,13 @@ import static org.springframework.cloud.netflix.eureka.server.EurekaControllerTe
 
 public class EurekaControllerReplicasTests {
 
-	String noAuthList1 = "http://test1.com";
+	String noAuthList1 = "https://test1.com";
 
-	String noAuthList2 = noAuthList1 + ",http://test2.com";
+	String noAuthList2 = noAuthList1 + ",https://test2.com";
 
-	String authList1 = "http://user:pwd@test1.com";
+	String authList1 = "https://user:pwd@test1.com";
 
-	String authList2 = authList1 + ",http://user2:pwd2@test2.com";
+	String authList2 = authList1 + ",https://user2:pwd2@test2.com";
 
 	String combinationAuthList1 = "http://test1.com,http://user2:pwd2@test2.com";
 

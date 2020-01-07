@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,7 +50,7 @@ import static org.springframework.boot.autoconfigure.condition.ConditionalOnWebA
  * @author Christian Dupuis
  * @author Dave Syer
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Hystrix.class, HealthIndicator.class,
 		HealthIndicatorAutoConfiguration.class })
 @AutoConfigureAfter({ HealthIndicatorAutoConfiguration.class })
@@ -62,8 +62,9 @@ public class HystrixAutoConfiguration {
 		return new HystrixHealthIndicator();
 	}
 
-	@Configuration
-	@ConditionalOnProperty(value = "management.metrics.binders.hystrix.enabled", matchIfMissing = true)
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnProperty(value = "management.metrics.binders.hystrix.enabled",
+			matchIfMissing = true)
 	@ConditionalOnClass({ HystrixMetricsBinder.class })
 	protected static class HystrixMetricsConfiguration {
 
@@ -78,7 +79,7 @@ public class HystrixAutoConfiguration {
 	 * See original
 	 * {@link org.springframework.boot.actuate.autoconfigure.jolokia.JolokiaEndpointAutoConfiguration}.
 	 */
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnWebApplication(type = SERVLET)
 	@ConditionalOnBean(HystrixCommandAspect.class) // only install the stream if enabled
 	@ConditionalOnClass({ HystrixMetricsStreamServlet.class })
@@ -99,7 +100,7 @@ public class HystrixAutoConfiguration {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnWebApplication(type = REACTIVE)
 	@ConditionalOnBean(HystrixCommandAspect.class) // only install the stream if enabled
 	@ConditionalOnClass({ DispatcherHandler.class })

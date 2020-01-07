@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -66,8 +66,9 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.util.StreamUtils.copyToString;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = FormZuulProxyApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, value = {
-		"zuul.routes.simplefzpat:/simplefzpat/**" })
+@SpringBootTest(classes = FormZuulProxyApplication.class,
+		webEnvironment = WebEnvironment.RANDOM_PORT,
+		value = { "zuul.routes.simplefzpat:/simplefzpat/**" })
 @DirtiesContext
 public class FormZuulProxyApplicationTests {
 
@@ -221,12 +222,12 @@ public class FormZuulProxyApplicationTests {
 }
 
 // Don't use @SpringBootApplication because we don't want to component scan
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableAutoConfiguration
 @RestController
 @EnableZuulProxy
-@RibbonClients({
-		@RibbonClient(name = "simplefzpat", configuration = FormRibbonClientConfiguration.class) })
+@RibbonClients({ @RibbonClient(name = "simplefzpat",
+		configuration = FormRibbonClientConfiguration.class) })
 @Import(NoSecurityConfiguration.class)
 class FormZuulProxyApplication {
 
@@ -303,7 +304,7 @@ class FormZuulProxyApplication {
 }
 
 // Load balancer with fixed server list for "simplefzpat" pointing to localhost
-@Configuration
+@Configuration(proxyBeanMethods = false)
 class FormRibbonClientConfiguration {
 
 	@LocalServerPort

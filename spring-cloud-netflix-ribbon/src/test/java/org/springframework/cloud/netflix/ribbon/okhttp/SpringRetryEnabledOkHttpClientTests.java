@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -62,9 +62,9 @@ import static org.mockito.Mockito.mock;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest({ "ribbon.okhttp.enabled: true", "ribbon.httpclient.enabled: false" })
-@ContextConfiguration(classes = { RibbonAutoConfiguration.class,
-		HttpClientConfiguration.class, RibbonClientConfiguration.class,
-		LoadBalancerAutoConfiguration.class })
+@ContextConfiguration(
+		classes = { RibbonAutoConfiguration.class, HttpClientConfiguration.class,
+				RibbonClientConfiguration.class, LoadBalancerAutoConfiguration.class })
 public class SpringRetryEnabledOkHttpClientTests implements ApplicationContextAware {
 
 	private ApplicationContext context;

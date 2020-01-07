@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -91,7 +91,7 @@ public class RibbonClientConfigurationTests {
 		when(this.inspector.isSecure(server)).thenReturn(true);
 
 		for (AbstractLoadBalancerAwareClient client : clients()) {
-			URI uri = client.reconstructURIWithServer(server, new URI("http://foo/"));
+			URI uri = client.reconstructURIWithServer(server, new URI("https://foo/"));
 			assertThat(uri).as(getReason(client)).isEqualTo(new URI("https://foo:7777/"));
 		}
 	}
@@ -102,8 +102,8 @@ public class RibbonClientConfigurationTests {
 		when(this.inspector.isSecure(server)).thenReturn(false);
 
 		for (AbstractLoadBalancerAwareClient client : clients()) {
-			URI uri = client.reconstructURIWithServer(server, new URI("http://foo/"));
-			assertThat(uri).as(getReason(client)).isEqualTo(new URI("http://foo:7777/"));
+			URI uri = client.reconstructURIWithServer(server, new URI("https://foo/"));
+			assertThat(uri).as(getReason(client)).isEqualTo(new URI("https://foo:7777/"));
 		}
 	}
 
@@ -118,7 +118,7 @@ public class RibbonClientConfigurationTests {
 
 		for (AbstractLoadBalancerAwareClient client : clients()) {
 			URI uri = client.reconstructURIWithServer(server,
-					new URI("http://foo/%20bar"));
+					new URI("https://foo/%20bar"));
 			assertThat(uri).as(getReason(client))
 					.isEqualTo(new URI("https://foo:7777/%20bar"));
 		}
@@ -190,7 +190,7 @@ public class RibbonClientConfigurationTests {
 				requiredType).length > 0;
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	protected static class TestLBConfig {
 

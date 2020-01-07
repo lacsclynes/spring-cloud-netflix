@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,8 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Dave Syer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = TestConfiguration.class, value = {
-		"ribbon.ConnectTimeout=25000" })
+@SpringBootTest(classes = TestConfiguration.class,
+		value = { "ribbon.ConnectTimeout=25000" })
 @DirtiesContext
 public class RibbonAutoConfigurationIntegrationTests {
 
@@ -53,7 +53,7 @@ public class RibbonAutoConfigurationIntegrationTests {
 						.isEqualTo(25000);
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@RibbonClient("client")
 	@Import({ PropertyPlaceholderAutoConfiguration.class, ArchaiusAutoConfiguration.class,
 			RibbonAutoConfiguration.class })

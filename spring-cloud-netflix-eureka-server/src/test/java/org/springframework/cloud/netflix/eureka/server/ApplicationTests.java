@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,9 +45,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT, properties = {
-		"spring.jmx.enabled=true", "management.security.enabled=false",
-		"management.endpoints.web.exposure.include=*" })
+@SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT,
+		properties = { "spring.jmx.enabled=true", "management.security.enabled=false",
+				"management.endpoints.web.exposure.include=*" })
 public class ApplicationTests {
 
 	private static final String BASE_PATH = new WebEndpointProperties().getBasePath();
@@ -115,7 +115,7 @@ public class ApplicationTests {
 		assertThat(decoded.getInstanceId()).as("instanceId was wrong").isEqualTo("foo");
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@EnableEurekaServer
 	protected static class Application {

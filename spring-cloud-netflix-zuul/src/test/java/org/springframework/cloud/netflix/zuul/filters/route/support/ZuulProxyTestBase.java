@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,6 +55,7 @@ import org.springframework.cloud.netflix.zuul.filters.route.RibbonCommandFactory
 import org.springframework.cloud.netflix.zuul.filters.route.support.RibbonRetryIntegrationTestBase.RetryableTestConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -67,6 +68,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,6 +77,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -434,8 +437,13 @@ public abstract class ZuulProxyTestBase {
 		}
 
 		@Override
-		public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-			RequestMappingHandlerMapping mapping = super.requestMappingHandlerMapping();
+		public RequestMappingHandlerMapping requestMappingHandlerMapping(
+				ContentNegotiationManager mvcContentNegotiationManager,
+				FormattingConversionService mvcConversionService,
+				ResourceUrlProvider mvcResourceUrlProvider) {
+			RequestMappingHandlerMapping mapping = super.requestMappingHandlerMapping(
+					mvcContentNegotiationManager, mvcConversionService,
+					mvcResourceUrlProvider);
 			mapping.setRemoveSemicolonContent(false);
 			return mapping;
 		}
@@ -488,7 +496,7 @@ public abstract class ZuulProxyTestBase {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public class FormEncodedMessageConverterConfiguration
 			extends WebMvcConfigurerAdapter {
 
@@ -505,7 +513,7 @@ public abstract class ZuulProxyTestBase {
 	}
 
 	// Load balancer with fixed server list for "simple" pointing to localhost
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public static class SimpleRibbonClientConfiguration {
 
 		@Value("${local.server.port}")
@@ -518,7 +526,7 @@ public abstract class ZuulProxyTestBase {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public static class AnotherRibbonClientConfiguration {
 
 		@Value("${local.server.port}")

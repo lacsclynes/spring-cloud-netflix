@@ -18,3 +18,5 @@ _site/
 .shelf
 *.swp
 *.swo
+.vscode/
+.flattened-pom.xml

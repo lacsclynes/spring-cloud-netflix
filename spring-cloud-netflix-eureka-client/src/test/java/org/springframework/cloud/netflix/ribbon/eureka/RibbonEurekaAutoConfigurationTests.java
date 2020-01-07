@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,9 +39,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author Spencer Gibb
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RibbonEurekaAutoConfigurationTests.EurekaClientDisabledApp.class, properties = {
-		"eureka.client.enabled=false",
-		"spring.application.name=eurekadisabledtest" }, webEnvironment = RANDOM_PORT)
+@SpringBootTest(
+		classes = RibbonEurekaAutoConfigurationTests.EurekaClientDisabledApp.class,
+		properties = { "eureka.client.enabled=false",
+				"spring.application.name=eurekadisabledtest" },
+		webEnvironment = RANDOM_PORT)
 @DirtiesContext
 public class RibbonEurekaAutoConfigurationTests {
 
@@ -66,12 +68,7 @@ public class RibbonEurekaAutoConfigurationTests {
 		@Bean
 		public CommandLineRunner commandLineRunner(
 				final TestLoadbalancerClient testLoadbalancerClient) {
-			return new CommandLineRunner() {
-				@Override
-				public void run(String... args) throws Exception {
-					testLoadbalancerClient.doStuff();
-				}
-			};
+			return args -> testLoadbalancerClient.doStuff();
 		}
 
 	}
@@ -90,7 +87,7 @@ public class RibbonEurekaAutoConfigurationTests {
 
 		public void doStuff() {
 			ServiceInstance serviceInstance = loadBalancerClient
-					.choose("http://host/doStuff");
+					.choose("https://host/doStuff");
 			if (serviceInstance != null) {
 				log.info(
 						"There is a service instance, because Eureka discovery is enabled and the service is registered");

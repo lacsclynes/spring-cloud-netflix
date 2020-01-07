@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -82,7 +82,7 @@ import static java.util.Collections.emptyList;
  * @author Dave Syer
  * @author Biju Kunjummen
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ ZuulProperties.class })
 @ConditionalOnClass({ ZuulServlet.class, ZuulServletFilter.class })
 @ConditionalOnBean(ZuulServerMarkerConfiguration.Marker.class)
@@ -130,8 +130,9 @@ public class ZuulServerAutoConfiguration {
 	}
 
 	@Bean
-	public ZuulHandlerMapping zuulHandlerMapping(RouteLocator routes) {
-		ZuulHandlerMapping mapping = new ZuulHandlerMapping(routes, zuulController());
+	public ZuulHandlerMapping zuulHandlerMapping(RouteLocator routes,
+			ZuulController zuulController) {
+		ZuulHandlerMapping mapping = new ZuulHandlerMapping(routes, zuulController);
 		mapping.setErrorController(this.errorController);
 		mapping.setCorsConfigurations(getCorsConfigurations());
 		return mapping;
@@ -153,7 +154,8 @@ public class ZuulServerAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(name = "zuulServlet")
-	@ConditionalOnProperty(name = "zuul.use-filter", havingValue = "false", matchIfMissing = true)
+	@ConditionalOnProperty(name = "zuul.use-filter", havingValue = "false",
+			matchIfMissing = true)
 	public ServletRegistrationBean zuulServlet() {
 		ServletRegistrationBean<ZuulServlet> servlet = new ServletRegistrationBean<>(
 				new ZuulServlet(), this.zuulProperties.getServletPattern());
@@ -165,7 +167,8 @@ public class ZuulServerAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(name = "zuulServletFilter")
-	@ConditionalOnProperty(name = "zuul.use-filter", havingValue = "true", matchIfMissing = false)
+	@ConditionalOnProperty(name = "zuul.use-filter", havingValue = "true",
+			matchIfMissing = false)
 	public FilterRegistrationBean zuulServletFilter() {
 		final FilterRegistrationBean<ZuulServletFilter> filterRegistration = new FilterRegistrationBean<>();
 		filterRegistration.setUrlPatterns(
@@ -186,16 +189,19 @@ public class ZuulServerAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public FormBodyWrapperFilter formBodyWrapperFilter() {
 		return new FormBodyWrapperFilter();
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public DebugFilter debugFilter() {
 		return new DebugFilter();
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public Servlet30WrapperFilter servlet30WrapperFilter() {
 		return new Servlet30WrapperFilter();
 	}
@@ -225,7 +231,7 @@ public class ZuulServerAutoConfiguration {
 				zuulProperties);
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class ZuulFilterConfiguration {
 
 		@Autowired
@@ -242,7 +248,7 @@ public class ZuulServerAutoConfiguration {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(MeterRegistry.class)
 	protected static class ZuulCounterFactoryConfiguration {
 
@@ -255,7 +261,7 @@ public class ZuulServerAutoConfiguration {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class ZuulMetricsConfiguration {
 
 		@Bean

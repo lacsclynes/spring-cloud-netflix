@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,10 +41,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT, properties = {
-		"spring.application.name=eureka", "server.servlet.context-path=/servlet",
-		"management.security.enabled=false",
-		"management.endpoints.web.exposure.include=*" })
+@SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT,
+		properties = { "spring.application.name=eureka",
+				"server.servlet.context-path=/servlet",
+				"management.security.enabled=false",
+				"management.endpoints.web.exposure.include=*" })
 public class ApplicationServletPathTests {
 
 	private static final String BASE_PATH = new WebEndpointProperties().getBasePath();
@@ -70,9 +71,8 @@ public class ApplicationServletPathTests {
 		assertThat(body.contains("eureka/js")).isTrue();
 		assertThat(body.contains("eureka/css")).isTrue();
 		// The "DS Replicas"
-		assertThat(
-				body.contains("<a href=\"http://localhost:8761/eureka/\">localhost</a>"))
-						.isTrue();
+		assertThat(body.contains("<h1>Instances currently registered with Eureka</h1>"))
+				.isTrue();
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class ApplicationServletPathTests {
 		assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@EnableEurekaServer
 	protected static class Application {

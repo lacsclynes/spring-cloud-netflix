@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -85,12 +85,15 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = RestClientRibbonCommandIntegrationTests.TestConfig.class, webEnvironment = WebEnvironment.RANDOM_PORT, value = {
-		"zuul.routes.other: /test/**=http://localhost:7777/local",
-		"zuul.routes.another: /another/twolevel/**", "zuul.routes.simple: /simple/**",
-		"zuul.routes.badhost: /badhost/**", "zuul.ignored-headers: X-Header",
-		"zuul.routes.rnd: /rnd/**", "rnd.ribbon.listOfServers: ${random.value}",
-		"zuul.remove-semicolon-content: false", "ribbon.restclient.enabled=true" })
+@SpringBootTest(classes = RestClientRibbonCommandIntegrationTests.TestConfig.class,
+		webEnvironment = WebEnvironment.RANDOM_PORT,
+		value = { "zuul.routes.other: /test/**=http://localhost:7777/local",
+				"zuul.routes.another: /another/twolevel/**",
+				"zuul.routes.simple: /simple/**", "zuul.routes.badhost: /badhost/**",
+				"zuul.ignored-headers: X-Header", "zuul.routes.rnd: /rnd/**",
+				"rnd.ribbon.listOfServers: ${random.value}",
+				"zuul.remove-semicolon-content: false",
+				"ribbon.restclient.enabled=true" })
 @DirtiesContext
 public class RestClientRibbonCommandIntegrationTests extends ZuulProxyTestBase {
 
@@ -281,14 +284,17 @@ public class RestClientRibbonCommandIntegrationTests extends ZuulProxyTestBase {
 	}
 
 	// Don't use @SpringBootApplication because we don't want to component scan
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@EnableZuulProxy
 	@RibbonClients({
-			@RibbonClient(name = "badhost", configuration = TestConfig.BadHostRibbonClientConfiguration.class),
-			@RibbonClient(name = "simple", configuration = ZuulProxyTestBase.SimpleRibbonClientConfiguration.class),
-			@RibbonClient(name = "another", configuration = ZuulProxyTestBase.AnotherRibbonClientConfiguration.class) })
+			@RibbonClient(name = "badhost",
+					configuration = TestConfig.BadHostRibbonClientConfiguration.class),
+			@RibbonClient(name = "simple",
+					configuration = ZuulProxyTestBase.SimpleRibbonClientConfiguration.class),
+			@RibbonClient(name = "another",
+					configuration = ZuulProxyTestBase.AnotherRibbonClientConfiguration.class) })
 	@Import(NoSecurityConfiguration.class)
 	static class TestConfig extends ZuulProxyTestBase.AbstractZuulProxyApplication {
 
@@ -412,7 +418,7 @@ public class RestClientRibbonCommandIntegrationTests extends ZuulProxyTestBase {
 		}
 
 		// Load balancer with fixed server list for "simple" pointing to bad host
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		static class BadHostRibbonClientConfiguration {
 
 			@Bean
@@ -424,7 +430,7 @@ public class RestClientRibbonCommandIntegrationTests extends ZuulProxyTestBase {
 		}
 
 		// This is needed to allow semicolon separators used in matrix variables
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		static class CustomHttpFirewallConfig
 				implements WebSecurityConfigurer<WebSecurity> {
 

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,12 +21,13 @@ import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.EurekaClientConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.health.HealthAggregator;
-import org.springframework.boot.actuate.health.OrderedHealthAggregator;
+import org.springframework.boot.actuate.health.SimpleStatusAggregator;
+import org.springframework.boot.actuate.health.StatusAggregator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.ConditionalOnBlockingDiscoveryEnabled;
 import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
 import org.springframework.cloud.context.scope.refresh.RefreshScopeRefreshedEvent;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaAutoServiceRegistration;
@@ -40,39 +41,61 @@ import org.springframework.context.annotation.Configuration;
  * @author Jon Schneider
  * @author Jakub Narloch
  * @author Olga Maciaszek-Sharma
+ * @author Tim Ysewyn
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
 @ConditionalOnClass(EurekaClientConfig.class)
 @ConditionalOnProperty(value = "eureka.client.enabled", matchIfMissing = true)
 @ConditionalOnDiscoveryEnabled
+@ConditionalOnBlockingDiscoveryEnabled
 public class EurekaDiscoveryClientConfiguration {
 
+	/**
+	 * Deprecated in favor of auto configuration order.
+	 * @return Marker bean
+	 * @deprecated in favor of auto configuration order.
+	 */
+	@Deprecated
 	@Bean
 	public Marker eurekaDiscoverClientMarker() {
 		return new Marker();
 	}
 
-	@Configuration
-	@ConditionalOnProperty(value = "eureka.client.healthcheck.enabled", matchIfMissing = false)
+	@Bean
+	@ConditionalOnMissingBean
+	public EurekaDiscoveryClient discoveryClient(EurekaClient client,
+			EurekaClientConfig clientConfig) {
+		return new EurekaDiscoveryClient(client, clientConfig);
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnProperty(value = "eureka.client.healthcheck.enabled",
+			matchIfMissing = false)
 	protected static class EurekaHealthCheckHandlerConfiguration {
 
 		@Autowired(required = false)
-		private HealthAggregator healthAggregator = new OrderedHealthAggregator();
+		private StatusAggregator statusAggregator = new SimpleStatusAggregator();
 
 		@Bean
 		@ConditionalOnMissingBean(HealthCheckHandler.class)
 		public EurekaHealthCheckHandler eurekaHealthCheckHandler() {
-			return new EurekaHealthCheckHandler(this.healthAggregator);
+			return new EurekaHealthCheckHandler(this.statusAggregator);
 		}
 
 	}
 
+	/**
+	 * Deprecated in favor of auto configuration order.
+	 *
+	 * @deprecated in favor of auto configuration order.
+	 */
+	@Deprecated
 	class Marker {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(RefreshScopeRefreshedEvent.class)
 	protected static class EurekaClientConfigurationRefresher
 			implements ApplicationListener<RefreshScopeRefreshedEvent> {

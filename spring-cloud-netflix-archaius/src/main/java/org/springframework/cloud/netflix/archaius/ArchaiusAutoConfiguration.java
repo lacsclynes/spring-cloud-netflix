@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -66,7 +66,7 @@ import static com.netflix.config.ConfigurationManager.URL_CONFIG_NAME;
 /**
  * @author Spencer Gibb
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ ConcurrentCompositeConfiguration.class,
 		ConfigurationBuilder.class })
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
@@ -194,7 +194,7 @@ public class ArchaiusAutoConfiguration {
 		ReflectionUtils.setField(field, null, value);
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(Health.class)
 	protected static class ArchaiusEndpointConfiguration {
 
@@ -206,8 +206,9 @@ public class ArchaiusAutoConfiguration {
 
 	}
 
-	@Configuration
-	@ConditionalOnProperty(value = "archaius.propagate.environmentChangedEvent", matchIfMissing = true)
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnProperty(value = "archaius.propagate.environmentChangedEvent",
+			matchIfMissing = true)
 	@ConditionalOnClass(EnvironmentChangeEvent.class)
 	protected static class PropagateEventsConfiguration
 			implements ApplicationListener<EnvironmentChangeEvent> {

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,8 +55,8 @@ import static org.springframework.cloud.netflix.test.TestAutoConfiguration.USER;
  * @author Spencer Gibb
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = HystrixOnlyApplication.class, webEnvironment = RANDOM_PORT, properties = {
-		"management.endpoint.health.show-details=ALWAYS" })
+@SpringBootTest(classes = HystrixOnlyApplication.class, webEnvironment = RANDOM_PORT,
+		properties = { "management.endpoint.health.show-details=ALWAYS" })
 @DirtiesContext
 @ActiveProfiles("proxysecurity")
 public class HystrixOnlyTests {
@@ -85,8 +85,10 @@ public class HystrixOnlyTests {
 	@SuppressWarnings("unchecked")
 	public void testHystrixHealth() {
 		Map map = getHealth();
-		assertThat(map).containsKeys("details");
-		Map details = (Map) map.get("details");
+		// https://github.com/spring-projects/spring-boot/issues/17929
+		// if the default changes back, this will need to be reverted.
+		assertThat(map).containsKeys("components");
+		Map details = (Map) map.get("components");
 		assertThat(details).containsKeys("hystrix");
 		Map hystrix = (Map) details.get("hystrix");
 		assertThat(hystrix).containsEntry("status", "UP");
@@ -174,7 +176,7 @@ class Service {
 }
 
 // Don't use @SpringBootApplication because we don't want to component scan
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableAutoConfiguration
 @EnableCircuitBreaker
 @RestController

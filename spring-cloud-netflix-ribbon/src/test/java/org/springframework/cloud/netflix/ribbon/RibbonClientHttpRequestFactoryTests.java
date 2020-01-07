@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -57,14 +57,18 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author Spencer Gibb
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = RibbonClientHttpRequestFactoryTests.App.class, webEnvironment = RANDOM_PORT, value = {
-		"spring.application.name=ribbonclienttest", "spring.jmx.enabled=true",
-		"spring.cloud.netflix.metrics.enabled=false", "ribbon.restclient.enabled=true",
-		"debug=true" })
+@SpringBootTest(classes = RibbonClientHttpRequestFactoryTests.App.class,
+		webEnvironment = RANDOM_PORT,
+		value = { "spring.application.name=ribbonclienttest", "spring.jmx.enabled=true",
+				"spring.cloud.netflix.metrics.enabled=false",
+				"ribbon.restclient.enabled=true", "debug=true" })
 @DirtiesContext
 public class RibbonClientHttpRequestFactoryTests {
 
 	@Rule
+	/**
+	 * JUnit rule
+	 */
 	public final ExpectedException exceptionRule = ExpectedException.none();
 
 	@LoadBalanced
@@ -147,10 +151,10 @@ public class RibbonClientHttpRequestFactoryTests {
 	public void invalidHostNameError() {
 		this.exceptionRule.expect(ResourceAccessException.class);
 		this.exceptionRule.expectMessage("Invalid hostname");
-		this.restTemplate.getForEntity("http://simple_bad", String.class);
+		this.restTemplate.getForEntity("https://simple_bad", String.class);
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@RibbonClient(value = "simple", configuration = SimpleRibbonClientConfiguration.class)
@@ -199,7 +203,7 @@ public class RibbonClientHttpRequestFactoryTests {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	static class SimpleRibbonClientConfiguration {
 
 		@Value("${local.server.port}")

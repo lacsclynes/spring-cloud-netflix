@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,10 +48,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author Gregor Zurowski
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, value = {
-		"zuul.routes.sslservice.url=https://localhost:8443",
-		"management.security.enabled=false",
-		"management.endpoints.web.exposure.include=*" })
+@SpringBootTest(webEnvironment = RANDOM_PORT,
+		value = { "zuul.routes.sslservice.url=https://localhost:8443",
+				"management.security.enabled=false",
+				"management.endpoints.web.exposure.include=*" })
 @DirtiesContext
 public class RoutesEndpointIntegrationTests {
 
@@ -102,7 +102,7 @@ public class RoutesEndpointIntegrationTests {
 		assertThat(details.isPrefixStripped()).isTrue();
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@EnableZuulProxy

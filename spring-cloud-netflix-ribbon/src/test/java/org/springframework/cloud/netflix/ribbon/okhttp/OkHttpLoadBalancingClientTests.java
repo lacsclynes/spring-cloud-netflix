@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -140,7 +140,7 @@ public class OkHttpLoadBalancingClientTests {
 		return client.getOkHttpClient(configOverride, false);
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class OkHttpClientConfiguration {
 
 		@Autowired(required = false)
@@ -157,12 +157,12 @@ public class OkHttpLoadBalancingClientTests {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class UseDefaults {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class FollowRedirects {
 
 		@Bean
@@ -174,7 +174,7 @@ public class OkHttpLoadBalancingClientTests {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class DoNotFollowRedirects {
 
 		@Bean
@@ -186,7 +186,7 @@ public class OkHttpLoadBalancingClientTests {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class Timeouts {
 
 		@Bean

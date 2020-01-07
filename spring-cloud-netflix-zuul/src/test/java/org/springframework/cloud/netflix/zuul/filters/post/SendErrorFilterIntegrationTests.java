@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,7 +61,8 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
  * @author Spencer Gibb
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = "zuul.routes.filtertest:/filtertest/**", webEnvironment = RANDOM_PORT)
+@SpringBootTest(properties = "zuul.routes.filtertest:/filtertest/**",
+		webEnvironment = RANDOM_PORT)
 @DirtiesContext
 public class SendErrorFilterIntegrationTests {
 
@@ -170,7 +171,7 @@ public class SendErrorFilterIntegrationTests {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	private static class RibbonConfig {
 
 		@LocalServerPort

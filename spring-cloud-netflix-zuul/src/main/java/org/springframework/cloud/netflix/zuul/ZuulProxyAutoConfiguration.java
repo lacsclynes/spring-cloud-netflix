@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -57,7 +57,7 @@ import org.springframework.context.annotation.Import;
  * @author Dave Syer
  * @author Biju Kunjummen
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import({ RibbonCommandFactoryConfiguration.RestClientRibbonConfiguration.class,
 		RibbonCommandFactoryConfiguration.OkHttpRibbonConfiguration.class,
 		RibbonCommandFactoryConfiguration.HttpClientRibbonConfiguration.class,
@@ -136,7 +136,7 @@ public class ZuulProxyAutoConfiguration extends ZuulServerAutoConfiguration {
 		return new SimpleServiceRouteMapper();
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnMissingClass("org.springframework.boot.actuate.health.Health")
 	protected static class NoActuatorConfiguration {
 
@@ -148,7 +148,7 @@ public class ZuulProxyAutoConfiguration extends ZuulServerAutoConfiguration {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(Health.class)
 	protected static class EndpointConfiguration {
 

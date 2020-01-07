@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,7 +58,7 @@ import static org.springframework.util.Assert.isTrue;
  *
  * @author Daniel Lavoie
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @RestController
 @SpringBootApplication
 public class EurekaServerMockApplication {
@@ -122,8 +122,8 @@ public class EurekaServerMockApplication {
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping(value = "/apps/{appName}/{id}", params = { "status",
-			"lastDirtyTimestamp" })
+	@PutMapping(value = "/apps/{appName}/{id}",
+			params = { "status", "lastDirtyTimestamp" })
 	public ResponseEntity sendHeartBeat(@PathVariable String appName,
 			@PathVariable String id, @RequestParam String status,
 			@RequestParam String lastDirtyTimestamp,
@@ -131,15 +131,14 @@ public class EurekaServerMockApplication {
 		if ("fourOFour".equals(appName)) {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<InstanceInfo>(new InstanceInfo(null, null, null, null,
-				null, null, null, null, null, null, null, null, null, 0, null, null, null,
-				null, null, null, null, new HashMap<>(), 0L, 0L, null, null),
-				HttpStatus.OK);
+		return new ResponseEntity<>(new InstanceInfo(null, null, null, null, null, null,
+				null, null, null, null, null, null, null, 0, null, null, null, null, null,
+				null, null, new HashMap<>(), 0L, 0L, null, null), HttpStatus.OK);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping(value = "/apps/{appName}/{id}/status", params = { "value",
-			"lastDirtyTimestamp" })
+	@PutMapping(value = "/apps/{appName}/{id}/status",
+			params = { "value", "lastDirtyTimestamp" })
 	public void statusUpdate(@PathVariable String appName, @PathVariable String id,
 			@RequestParam String value, @RequestParam String lastDirtyTimestamp) {
 
@@ -172,7 +171,7 @@ public class EurekaServerMockApplication {
 		return INFO;
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	protected static class TestSecurityConfiguration
 			extends WebSecurityConfigurerAdapter {

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,10 +36,12 @@ import com.netflix.discovery.converters.wrappers.CodecWrappers;
 import com.netflix.eureka.DefaultEurekaServerContext;
 import com.netflix.eureka.EurekaServerConfig;
 import com.netflix.eureka.EurekaServerContext;
+import com.netflix.eureka.cluster.PeerEurekaNode;
 import com.netflix.eureka.cluster.PeerEurekaNodes;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.resources.DefaultServerCodecs;
 import com.netflix.eureka.resources.ServerCodecs;
+import com.netflix.eureka.transport.JerseyReplicationClient;
 import com.sun.jersey.api.core.DefaultResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
@@ -65,20 +67,20 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.ClassUtils;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Gunnar Hillert
  * @author Biju Kunjummen
  * @author Fahim Farook
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import(EurekaServerInitializerConfiguration.class)
 @ConditionalOnBean(EurekaServerMarkerConfiguration.Marker.class)
 @EnableConfigurationProperties({ EurekaDashboardProperties.class,
 		InstanceRegistryProperties.class })
 @PropertySource("classpath:/eureka/server.properties")
-public class EurekaServerAutoConfiguration extends WebMvcConfigurerAdapter {
+public class EurekaServerAutoConfiguration implements WebMvcConfigurer {
 
 	/**
 	 * List of packages containing Jersey resources required by the Eureka server.
@@ -113,7 +115,8 @@ public class EurekaServerAutoConfiguration extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	@ConditionalOnProperty(prefix = "eureka.dashboard", name = "enabled", matchIfMissing = true)
+	@ConditionalOnProperty(prefix = "eureka.dashboard", name = "enabled",
+			matchIfMissing = true)
 	public EurekaController eurekaController() {
 		return new EurekaController(this.applicationInfoManager);
 	}
@@ -140,6 +143,12 @@ public class EurekaServerAutoConfiguration extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
+	public ReplicationClientAdditionalFilters replicationClientAdditionalFilters() {
+		return new ReplicationClientAdditionalFilters(Collections.emptySet());
+	}
+
+	@Bean
 	public PeerAwareInstanceRegistry peerAwareInstanceRegistry(
 			ServerCodecs serverCodecs) {
 		this.eurekaClient.getApplications(); // force initialization
@@ -152,9 +161,11 @@ public class EurekaServerAutoConfiguration extends WebMvcConfigurerAdapter {
 	@Bean
 	@ConditionalOnMissingBean
 	public PeerEurekaNodes peerEurekaNodes(PeerAwareInstanceRegistry registry,
-			ServerCodecs serverCodecs) {
+			ServerCodecs serverCodecs,
+			ReplicationClientAdditionalFilters replicationClientAdditionalFilters) {
 		return new RefreshablePeerEurekaNodes(registry, this.eurekaServerConfig,
-				this.eurekaClientConfig, serverCodecs, this.applicationInfoManager);
+				this.eurekaClientConfig, serverCodecs, this.applicationInfoManager,
+				replicationClientAdditionalFilters);
 	}
 
 	@Bean
@@ -178,9 +189,9 @@ public class EurekaServerAutoConfiguration extends WebMvcConfigurerAdapter {
 	 * @return a jersey {@link FilterRegistrationBean}
 	 */
 	@Bean
-	public FilterRegistrationBean jerseyFilterRegistration(
+	public FilterRegistrationBean<?> jerseyFilterRegistration(
 			javax.ws.rs.core.Application eurekaJerseyApp) {
-		FilterRegistrationBean bean = new FilterRegistrationBean();
+		FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<Filter>();
 		bean.setFilter(new ServletContainer(eurekaJerseyApp));
 		bean.setOrder(Ordered.LOWEST_PRECEDENCE);
 		bean.setUrlPatterns(
@@ -234,15 +245,16 @@ public class EurekaServerAutoConfiguration extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public FilterRegistrationBean traceFilterRegistration(
+	@ConditionalOnBean(name = "httpTraceFilter")
+	public FilterRegistrationBean<?> traceFilterRegistration(
 			@Qualifier("httpTraceFilter") Filter filter) {
-		FilterRegistrationBean bean = new FilterRegistrationBean();
+		FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<Filter>();
 		bean.setFilter(filter);
 		bean.setOrder(Ordered.LOWEST_PRECEDENCE - 10);
 		return bean;
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class EurekaServerConfigBeanConfiguration {
 
 		@Bean
@@ -273,12 +285,33 @@ public class EurekaServerAutoConfiguration extends WebMvcConfigurerAdapter {
 	static class RefreshablePeerEurekaNodes extends PeerEurekaNodes
 			implements ApplicationListener<EnvironmentChangeEvent> {
 
+		private ReplicationClientAdditionalFilters replicationClientAdditionalFilters;
+
 		RefreshablePeerEurekaNodes(final PeerAwareInstanceRegistry registry,
 				final EurekaServerConfig serverConfig,
 				final EurekaClientConfig clientConfig, final ServerCodecs serverCodecs,
-				final ApplicationInfoManager applicationInfoManager) {
+				final ApplicationInfoManager applicationInfoManager,
+				final ReplicationClientAdditionalFilters replicationClientAdditionalFilters) {
 			super(registry, serverConfig, clientConfig, serverCodecs,
 					applicationInfoManager);
+			this.replicationClientAdditionalFilters = replicationClientAdditionalFilters;
+		}
+
+		@Override
+		protected PeerEurekaNode createPeerEurekaNode(String peerEurekaNodeUrl) {
+			JerseyReplicationClient replicationClient = JerseyReplicationClient
+					.createReplicationClient(serverConfig, serverCodecs,
+							peerEurekaNodeUrl);
+
+			this.replicationClientAdditionalFilters.getFilters()
+					.forEach(replicationClient::addReplicationClientFilter);
+
+			String targetHost = hostFromUrl(peerEurekaNodeUrl);
+			if (targetHost == null) {
+				targetHost = "host";
+			}
+			return new PeerEurekaNode(registry, targetHost, peerEurekaNodeUrl,
+					replicationClient, serverConfig);
 		}
 
 		@Override
@@ -296,7 +329,7 @@ public class EurekaServerAutoConfiguration extends WebMvcConfigurerAdapter {
 
 			// if eureka.client.use-dns-for-fetching-service-urls is true, then
 			// service-url will not be fetched from environment.
-			if (clientConfig.shouldUseDnsForFetchingServiceUrls()) {
+			if (this.clientConfig.shouldUseDnsForFetchingServiceUrls()) {
 				return false;
 			}
 

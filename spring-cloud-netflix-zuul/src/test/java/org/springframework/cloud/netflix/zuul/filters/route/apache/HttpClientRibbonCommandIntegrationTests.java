@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,12 +74,13 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
  * @author Spencer Gibb
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = HttpClientRibbonCommandIntegrationTests.TestConfig.class, webEnvironment = WebEnvironment.RANDOM_PORT, value = {
-		"zuul.routes.other: /test/**=http://localhost:7777/local",
-		"zuul.routes.another: /another/twolevel/**", "zuul.routes.simple: /simple/**",
-		"zuul.routes.singleton.id: singleton",
-		"zuul.routes.singleton.path: /singleton/**",
-		"zuul.routes.singleton.sensitiveHeaders: " })
+@SpringBootTest(classes = HttpClientRibbonCommandIntegrationTests.TestConfig.class,
+		webEnvironment = WebEnvironment.RANDOM_PORT,
+		value = { "zuul.routes.other: /test/**=http://localhost:7777/local",
+				"zuul.routes.another: /another/twolevel/**",
+				"zuul.routes.simple: /simple/**", "zuul.routes.singleton.id: singleton",
+				"zuul.routes.singleton.path: /singleton/**",
+				"zuul.routes.singleton.sensitiveHeaders: " })
 @DirtiesContext
 public class HttpClientRibbonCommandIntegrationTests extends ZuulProxyTestBase {
 
@@ -151,14 +152,16 @@ public class HttpClientRibbonCommandIntegrationTests extends ZuulProxyTestBase {
 	}
 
 	// Don't use @SpringBootApplication because we don't want to component scan
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@EnableZuulProxy
-	@RibbonClients({
-			@RibbonClient(name = "simple", configuration = ZuulProxyTestBase.SimpleRibbonClientConfiguration.class),
-			@RibbonClient(name = "another", configuration = ZuulProxyTestBase.AnotherRibbonClientConfiguration.class),
-			@RibbonClient(name = "singleton", configuration = SingletonRibbonClientConfiguration.class) })
+	@RibbonClients({ @RibbonClient(name = "simple",
+			configuration = ZuulProxyTestBase.SimpleRibbonClientConfiguration.class),
+			@RibbonClient(name = "another",
+					configuration = ZuulProxyTestBase.AnotherRibbonClientConfiguration.class),
+			@RibbonClient(name = "singleton",
+					configuration = SingletonRibbonClientConfiguration.class) })
 	@Import(NoSecurityConfiguration.class)
 	static class TestConfig extends ZuulProxyTestBase.AbstractZuulProxyApplication {
 
@@ -199,7 +202,7 @@ public class HttpClientRibbonCommandIntegrationTests extends ZuulProxyTestBase {
 	}
 
 	// Load balancer with fixed server list and defined ribbon rest client
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public static class SingletonRibbonClientConfiguration {
 
 		@Value("${local.server.port}")

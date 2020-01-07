@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,8 +51,10 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = SimpleZuulProxyApplicationTests.SimpleZuulProxyApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, value = {
-		"zuul.forceOriginalQueryStringEncoding: true" })
+@SpringBootTest(
+		classes = SimpleZuulProxyApplicationTests.SimpleZuulProxyApplication.class,
+		webEnvironment = WebEnvironment.RANDOM_PORT,
+		value = { "zuul.forceOriginalQueryStringEncoding: true" })
 @DirtiesContext
 public class SimpleZuulProxyApplicationTests {
 
@@ -143,7 +145,7 @@ public class SimpleZuulProxyApplicationTests {
 	}
 
 	// Don't use @SpringBootApplication because we don't want to component scan
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@EnableZuulProxy

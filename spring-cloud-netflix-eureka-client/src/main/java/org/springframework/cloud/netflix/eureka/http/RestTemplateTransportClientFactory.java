@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -76,7 +76,7 @@ public class RestTemplateTransportClientFactory implements TransportClientFactor
 		}
 
 		restTemplate.getMessageConverters().add(0, mappingJacksonHttpMessageConverter());
-		restTemplate.setErrorHandler(new ErrorHanlder());
+		restTemplate.setErrorHandler(new ErrorHandler());
 
 		return restTemplate;
 	}
@@ -150,7 +150,7 @@ public class RestTemplateTransportClientFactory implements TransportClientFactor
 	public void shutdown() {
 	}
 
-	class ErrorHanlder extends DefaultResponseErrorHandler {
+	class ErrorHandler extends DefaultResponseErrorHandler {
 
 		@Override
 		protected boolean hasError(HttpStatus statusCode) {

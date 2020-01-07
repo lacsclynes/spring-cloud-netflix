@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,7 @@ public class OkHttpRibbonRequestTests {
 
 	@Test
 	public void testNullEntity() throws Exception {
-		String uri = "http://example.com";
+		String uri = "https://example.com";
 		LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add("my-header", "my-value");
 		// headers.add(HttpEncoding.CONTENT_LENGTH, "5192");
@@ -79,7 +79,7 @@ public class OkHttpRibbonRequestTests {
 			boolean addContentLengthHeader, String method) throws IOException {
 		String lengthString = String.valueOf(entityValue.length());
 		Long length = null;
-		String uri = "http://example.com";
+		String uri = "https://example.com";
 		LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		if (addContentLengthHeader) {
 			headers.add("Content-Length", lengthString);

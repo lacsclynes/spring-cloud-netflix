@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -81,7 +81,7 @@ public class ProxyRequestHelperTests {
 
 		MultiValueMap<String, String> headers = helper.buildZuulRequestHeaders(request);
 
-		helper.debug("POST", "http://example.com", headers, new LinkedMultiValueMap<>(),
+		helper.debug("POST", "https://example.com", headers, new LinkedMultiValueMap<>(),
 				request.getInputStream());
 		HttpTrace actual = this.traceRepository.findAll().get(0);
 		Assertions.assertThat(actual.getRequest().getHeaders()).containsKeys("singleName",
@@ -130,7 +130,9 @@ public class ProxyRequestHelperTests {
 		RequestContext context = RequestContext.getCurrentContext();
 		context.setRequest(request);
 
-		ProxyRequestHelper helper = new ProxyRequestHelper(new ZuulProperties());
+		ZuulProperties zuulProperties = new ZuulProperties();
+		zuulProperties.setTraceRequestBody(true);
+		ProxyRequestHelper helper = new ProxyRequestHelper(zuulProperties);
 
 		assertThat(helper.shouldDebugBody(context)).as("shouldDebugBody wrong").isTrue();
 	}
@@ -139,7 +141,9 @@ public class ProxyRequestHelperTests {
 	public void shouldDebugBodyNullRequest() throws Exception {
 		RequestContext context = RequestContext.getCurrentContext();
 
-		ProxyRequestHelper helper = new ProxyRequestHelper(new ZuulProperties());
+		ZuulProperties zuulProperties = new ZuulProperties();
+		zuulProperties.setTraceRequestBody(true);
+		ProxyRequestHelper helper = new ProxyRequestHelper(zuulProperties);
 
 		assertThat(helper.shouldDebugBody(context)).as("shouldDebugBody wrong").isTrue();
 	}
@@ -151,7 +155,9 @@ public class ProxyRequestHelperTests {
 		RequestContext context = RequestContext.getCurrentContext();
 		context.setRequest(request);
 
-		ProxyRequestHelper helper = new ProxyRequestHelper(new ZuulProperties());
+		ZuulProperties zuulProperties = new ZuulProperties();
+		zuulProperties.setTraceRequestBody(true);
+		ProxyRequestHelper helper = new ProxyRequestHelper(zuulProperties);
 
 		assertThat(helper.shouldDebugBody(context)).as("shouldDebugBody wrong").isTrue();
 	}

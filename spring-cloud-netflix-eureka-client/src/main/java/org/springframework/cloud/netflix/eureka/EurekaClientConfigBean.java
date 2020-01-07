@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -241,7 +241,7 @@ public class EurekaClientConfigBean implements EurekaClientConfig, Ordered {
 	 *
 	 * Typically the eureka server URLs carry protocol,host,port,context and version
 	 * information if any. Example:
-	 * http://ec2-256-156-243-129.compute-1.amazonaws.com:7001/eureka/
+	 * https://ec2-256-156-243-129.compute-1.amazonaws.com:7001/eureka/
 	 *
 	 * The changes are effective at runtime at the next service url refresh cycle as
 	 * specified by eurekaServiceUrlPollIntervalSeconds.

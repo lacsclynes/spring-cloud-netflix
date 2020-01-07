@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,9 +61,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author Stéphane Leroy
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-		"spring.application.name=regex-test-application", "spring.jmx.enabled=false",
-		"eureka.client.enabled=false" })
+@SpringBootTest(webEnvironment = RANDOM_PORT,
+		properties = { "spring.application.name=regex-test-application",
+				"spring.jmx.enabled=false", "eureka.client.enabled=false" })
 @DirtiesContext
 public class PatternServiceRouteMapperIntegrationTests {
 
@@ -114,7 +114,8 @@ public class PatternServiceRouteMapperIntegrationTests {
 	@EnableAutoConfiguration
 	@RestController
 	@EnableZuulProxy
-	@RibbonClient(value = SERVICE_ID, configuration = SimpleRibbonClientConfiguration.class)
+	@RibbonClient(value = SERVICE_ID,
+			configuration = SimpleRibbonClientConfiguration.class)
 	@Import(NoSecurityConfiguration.class)
 	protected static class SampleCustomZuulProxyApplication {
 

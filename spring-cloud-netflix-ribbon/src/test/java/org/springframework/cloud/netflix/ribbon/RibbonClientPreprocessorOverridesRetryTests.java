@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,10 +44,11 @@ import org.springframework.util.Assert;
  * @author Tyler Van Gorder
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = RibbonClientPreprocessorOverridesRetryTests.TestConfiguration.class, value = {
-		"customRetry.ribbon.MaxAutoRetries=0",
-		"customRetry.ribbon.MaxAutoRetriesNextServer=1",
-		"customRetry.ribbon.OkToRetryOnAllOperations=true" })
+@SpringBootTest(
+		classes = RibbonClientPreprocessorOverridesRetryTests.TestConfiguration.class,
+		value = { "customRetry.ribbon.MaxAutoRetries=0",
+				"customRetry.ribbon.MaxAutoRetriesNextServer=1",
+				"customRetry.ribbon.OkToRetryOnAllOperations=true" })
 @DirtiesContext
 public class RibbonClientPreprocessorOverridesRetryTests {
 
@@ -66,7 +67,7 @@ public class RibbonClientPreprocessorOverridesRetryTests {
 				.isCircuitTrippingException(new UnknownHostException("Unknown Host")));
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@RibbonClient(name = "customRetry", configuration = RetryRibbonConfiguration.class)
 	@Import({ PropertyPlaceholderAutoConfiguration.class, ArchaiusAutoConfiguration.class,
 			RibbonAutoConfiguration.class })
@@ -76,7 +77,7 @@ public class RibbonClientPreprocessorOverridesRetryTests {
 
 }
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 class RetryRibbonConfiguration {
 
 	@Bean

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -56,8 +56,10 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = ZuulProxyApplicationTests.ZuulProxyApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-		"zuul.routes.simplezpat:/simplezpat/**", "logging.level.org.apache.http: DEBUG" })
+@SpringBootTest(classes = ZuulProxyApplicationTests.ZuulProxyApplication.class,
+		webEnvironment = WebEnvironment.RANDOM_PORT,
+		properties = { "zuul.routes.simplezpat:/simplezpat/**",
+				"logging.level.org.apache.http: DEBUG" })
 @DirtiesContext
 public class ZuulProxyApplicationTests {
 
@@ -99,7 +101,7 @@ public class ZuulProxyApplicationTests {
 	@Test
 	public void preflightRequestSucceedsForGetRequest() {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.put("Origin", singletonList("http://hello.com"));
+		headers.put("Origin", singletonList("https://hello.com"));
 		headers.put("Access-Control-Request-Method", singletonList("GET"));
 		ResponseEntity<Void> result = testRestTemplate.exchange(url(), HttpMethod.OPTIONS,
 				new HttpEntity<>(headers), Void.class);
@@ -110,7 +112,7 @@ public class ZuulProxyApplicationTests {
 	@Test
 	public void preflightRequestIsForbiddenForUnsupportedMethod() {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.put("Origin", singletonList("http://hello.com"));
+		headers.put("Origin", singletonList("https://hello.com"));
 		headers.put("Access-Control-Request-Method", singletonList("PUT"));
 		ResponseEntity<Void> result = testRestTemplate.exchange(url(), HttpMethod.OPTIONS,
 				new HttpEntity<>(headers), Void.class);
@@ -134,17 +136,18 @@ public class ZuulProxyApplicationTests {
 	}
 
 	// Don't use @SpringBootApplication because we don't want to component scan
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@EnableZuulProxy
-	@RibbonClient(name = "simplezpat", configuration = TestRibbonClientConfiguration.class)
+	@RibbonClient(name = "simplezpat",
+			configuration = TestRibbonClientConfiguration.class)
 	@Import(NoSecurityConfiguration.class)
 	static class ZuulProxyApplication {
 
 		@RequestMapping(value = "/transferencoding", method = RequestMethod.GET)
-		public String get(
-				@RequestHeader(name = "Transfer-Encoding", required = false) String transferEncoding) {
+		public String get(@RequestHeader(name = "Transfer-Encoding",
+				required = false) String transferEncoding) {
 			if (transferEncoding == null) {
 				return "missing";
 			}
@@ -153,7 +156,8 @@ public class ZuulProxyApplicationTests {
 
 		@RequestMapping(value = "/transferencoding", method = RequestMethod.POST)
 		public String post(
-				@RequestHeader(name = "Transfer-Encoding", required = false) String transferEncoding,
+				@RequestHeader(name = "Transfer-Encoding",
+						required = false) String transferEncoding,
 				@RequestBody String hello) {
 			if (transferEncoding == null) {
 				return "missing";
@@ -166,7 +170,7 @@ public class ZuulProxyApplicationTests {
 			return new WebMvcConfigurer() {
 				public void addCorsMappings(CorsRegistry registry) {
 					registry.addMapping("/simplezpat/**")
-							.allowedOrigins("http://hello.com")
+							.allowedOrigins("https://hello.com")
 							.allowedMethods("GET", "POST")
 							.allowedHeaders("Authorization");
 				}
@@ -176,7 +180,7 @@ public class ZuulProxyApplicationTests {
 	}
 
 	// Load balancer with fixed server list for "simplezpat" pointing to localhost
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	static class TestRibbonClientConfiguration {
 
 		@LocalServerPort

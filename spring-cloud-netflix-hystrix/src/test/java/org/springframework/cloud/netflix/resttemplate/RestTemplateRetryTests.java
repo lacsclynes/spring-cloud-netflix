@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,11 +61,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestTemplateRetryTests.Application.class, webEnvironment = RANDOM_PORT, properties = {
-		"spring.application.name=resttemplatetest", "logging.level.com.netflix=DEBUG",
-		"logging.level.org.springframework.cloud.netflix.resttemplate=DEBUG",
-		"logging.level.com.netflix=DEBUG", "badClients.ribbon.MaxAutoRetries=25",
-		"badClients.ribbon.OkToRetryOnAllOperations=true", "ribbon.http.client.enabled" })
+@SpringBootTest(classes = RestTemplateRetryTests.Application.class,
+		webEnvironment = RANDOM_PORT,
+		properties = { "spring.application.name=resttemplatetest",
+				"logging.level.com.netflix=DEBUG",
+				"logging.level.org.springframework.cloud.netflix.resttemplate=DEBUG",
+				"logging.level.com.netflix=DEBUG", "badClients.ribbon.MaxAutoRetries=25",
+				"badClients.ribbon.OkToRetryOnAllOperations=true",
+				"ribbon.http.client.enabled" })
 @DirtiesContext
 public class RestTemplateRetryTests {
 
@@ -204,7 +207,7 @@ public class RestTemplateRetryTests {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@RibbonClient(name = "badClients", configuration = LocalBadClientConfiguration.class)
@@ -252,7 +255,7 @@ public class RestTemplateRetryTests {
 
 	// Load balancer with fixed server list for "local" pointing to localhost
 	// and some bogus servers are thrown in to test retry
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	static class LocalBadClientConfiguration {
 
 		static BaseLoadBalancer balancer;

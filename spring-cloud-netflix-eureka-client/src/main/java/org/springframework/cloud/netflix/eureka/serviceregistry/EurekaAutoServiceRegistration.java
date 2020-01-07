@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -138,11 +138,14 @@ public class EurekaAutoServiceRegistration implements AutoServiceRegistration,
 
 	public void onApplicationEvent(WebServerInitializedEvent event) {
 		// TODO: take SSL into account
-		int localPort = event.getWebServer().getPort();
-		if (this.port.get() == 0) {
-			log.info("Updating port to " + localPort);
-			this.port.compareAndSet(0, localPort);
-			start();
+		String contextName = event.getApplicationContext().getServerNamespace();
+		if (contextName == null || !contextName.equals("management")) {
+			int localPort = event.getWebServer().getPort();
+			if (this.port.get() == 0) {
+				log.info("Updating port to " + localPort);
+				this.port.compareAndSet(0, localPort);
+				start();
+			}
 		}
 	}
 

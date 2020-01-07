@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,12 +31,12 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 /**
  * @author Spencer Gibb
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import({ NoopDiscoveryClientAutoConfiguration.class })
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 public class TestAutoConfiguration {
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	protected static class TestSecurityConfiguration
 			extends WebSecurityConfigurerAdapter {
@@ -46,7 +46,7 @@ public class TestAutoConfiguration {
 		}
 
 		@Override
-		public void configure(WebSecurity web) throws Exception {
+		public void configure(WebSecurity web) {
 			StrictHttpFirewall httpFirewall = new StrictHttpFirewall();
 			httpFirewall.setAllowSemicolon(true);
 			web.httpFirewall(httpFirewall);

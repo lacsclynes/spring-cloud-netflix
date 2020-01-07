@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ import org.springframework.web.context.ServletContextAware;
 /**
  * @author Dave Syer
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class EurekaServerInitializerConfiguration
 		implements ServletContextAware, SmartLifecycle, Ordered {
 
@@ -64,23 +64,20 @@ public class EurekaServerInitializerConfiguration
 
 	@Override
 	public void start() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					// TODO: is this class even needed now?
-					eurekaServerBootstrap.contextInitialized(
-							EurekaServerInitializerConfiguration.this.servletContext);
-					log.info("Started Eureka Server");
+		new Thread(() -> {
+			try {
+				// TODO: is this class even needed now?
+				eurekaServerBootstrap.contextInitialized(
+						EurekaServerInitializerConfiguration.this.servletContext);
+				log.info("Started Eureka Server");
 
-					publish(new EurekaRegistryAvailableEvent(getEurekaServerConfig()));
-					EurekaServerInitializerConfiguration.this.running = true;
-					publish(new EurekaServerStartedEvent(getEurekaServerConfig()));
-				}
-				catch (Exception ex) {
-					// Help!
-					log.error("Could not initialize Eureka servlet context", ex);
-				}
+				publish(new EurekaRegistryAvailableEvent(getEurekaServerConfig()));
+				EurekaServerInitializerConfiguration.this.running = true;
+				publish(new EurekaServerStartedEvent(getEurekaServerConfig()));
+			}
+			catch (Exception ex) {
+				// Help!
+				log.error("Could not initialize Eureka servlet context", ex);
 			}
 		}).start();
 	}

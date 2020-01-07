@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -137,15 +137,19 @@ public abstract class RibbonRetryIntegrationTestBase {
 	}
 
 	// Don't use @SpringBootApplication because we don't want to component scan
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@EnableZuulProxy
 	@RibbonClients({
-			@RibbonClient(name = "retryable", configuration = RibbonClientConfiguration.class),
-			@RibbonClient(name = "disableretry", configuration = RibbonClientConfiguration.class),
-			@RibbonClient(name = "globalretrydisabled", configuration = RibbonClientConfiguration.class),
-			@RibbonClient(name = "getretryable", configuration = RibbonClientConfiguration.class) })
+			@RibbonClient(name = "retryable",
+					configuration = RibbonClientConfiguration.class),
+			@RibbonClient(name = "disableretry",
+					configuration = RibbonClientConfiguration.class),
+			@RibbonClient(name = "globalretrydisabled",
+					configuration = RibbonClientConfiguration.class),
+			@RibbonClient(name = "getretryable",
+					configuration = RibbonClientConfiguration.class) })
 	@Import(NoSecurityConfiguration.class)
 	public static class RetryableTestConfig {
 
@@ -193,7 +197,7 @@ public abstract class RibbonRetryIntegrationTestBase {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public static class RibbonClientConfiguration {
 
 		@Value("${local.server.port}")
@@ -206,7 +210,7 @@ public abstract class RibbonRetryIntegrationTestBase {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public static class FourOFourRetryableRibbonConfiguration
 			extends RibbonClientConfiguration {
 

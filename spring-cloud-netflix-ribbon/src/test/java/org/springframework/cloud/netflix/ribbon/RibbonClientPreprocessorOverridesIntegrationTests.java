@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Dave Syer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = RibbonClientPreprocessorOverridesIntegrationTests.TestConfiguration.class)
+@SpringBootTest(
+		classes = RibbonClientPreprocessorOverridesIntegrationTests.TestConfiguration.class)
 @DirtiesContext
 public class RibbonClientPreprocessorOverridesIntegrationTests {
 
@@ -85,7 +86,7 @@ public class RibbonClientPreprocessorOverridesIntegrationTests {
 				.isEqualTo("FooTestZone");
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@RibbonClients({ @RibbonClient(name = "foo", configuration = FooConfiguration.class),
 			@RibbonClient(name = "bar", configuration = BarConfiguration.class) })
 	@Import({ UtilAutoConfiguration.class, PropertyPlaceholderAutoConfiguration.class,
@@ -94,7 +95,7 @@ public class RibbonClientPreprocessorOverridesIntegrationTests {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public static class FooConfiguration {
 
 		@Bean
@@ -129,7 +130,7 @@ public class RibbonClientPreprocessorOverridesIntegrationTests {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public static class BarConfiguration {
 
 		@Bean

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -68,8 +68,10 @@ import static junit.framework.TestCase.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CustomHostRoutingFilterTests.SampleCustomZuulProxyApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-		"server.servlet.context-path: /app" })
+@SpringBootTest(
+		classes = CustomHostRoutingFilterTests.SampleCustomZuulProxyApplication.class,
+		webEnvironment = WebEnvironment.RANDOM_PORT,
+		properties = { "server.servlet.context-path: /app" })
 @DirtiesContext
 public class CustomHostRoutingFilterTests {
 
@@ -167,7 +169,7 @@ public class CustomHostRoutingFilterTests {
 		assertThat(result2.getBody()).isEqualTo("GetCookie 1");
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@EnableAutoConfiguration
 	@RestController
 	@Import(NoSecurityConfiguration.class)
@@ -210,7 +212,7 @@ public class CustomHostRoutingFilterTests {
 			SpringApplication.run(SampleCustomZuulProxyApplication.class, args);
 		}
 
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		@EnableZuulProxy
 		protected static class CustomZuulProxyConfig {
 
